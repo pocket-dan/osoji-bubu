@@ -1,0 +1,18 @@
+vr_camera:
+  enabled: true
+  device: 1
+  width: 320
+  height: 240
+  fps: 30
+
+ml_camera:
+  enabled: true
+  device: 0
+  width: 320
+  height: 240
+  fps: 30
+
+training:
+  train: true
+  num_samples: 10
+  snapshot_path: "ml/models/dataset1_model"

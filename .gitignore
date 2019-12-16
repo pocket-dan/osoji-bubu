@@ -1,0 +1,11 @@
+sub
+osoji-bubu
+
+ml/*
+!ml/*.go
+!ml/models
+!ml/notebooks
+ml/models/*
+ml/notebooks/*
+
+!.gitkeep

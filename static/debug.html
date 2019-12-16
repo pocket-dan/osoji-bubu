@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>Debug</title>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+    html,body {
+      width: 100%;
+      height: 100%;
+      margin: 0px;
+    }
+    #container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+    }
+    .img-container {
+      width: 50%;
+      height: 100%;
+      position: relative;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      margin: 0px;
+      object-fit: contain;
+    }
+    .score {
+      color: red;
+      font-weight: bold;
+      font-size: 2em;
+      position:fixed;
+      top: 5%;
+      margin-left: 32%;
+    }
+    </style>
+  </head>
+
+  <body>
+    <div id="container">
+      <p>VR Camera</p>
+      <div class="img-container">
+        <img id="vr" class="xform streamimage"/>
+        <p id="score-left" class="score"><p>
+      </div>
+      <p>ML Camera</p>
+      <div class="img-container">
+        <img id="ml" class="xform streamimage"/>
+        <p id="score-right" class="score"><p>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+    </script>
+
+    <script type="text/javascript">
+      let vrUrl = "/api/vr/capture";
+      let vrImage = document.getElementById("vr");
+      let scoreLeft = document.getElementById("score-left");
+
+      let vrFpsCount = 0;
+      setInterval(async function() {
+        scoreLeft.innerText = scoreName + ": " + vrFpsCount
+        vrFpsCount = 0;
+      }, 1000);
+
+      let scoreName = "fps";
+      (async function()  {
+        for(;;) {
+          await fetch(vrUrl)
+            .then(function(resp) {
+              return resp.json();
+            })
+            .then(function(resp) {
+              vrImage.src = "data:image/jpeg;base64," + resp.image;
+            });
+          vrFpsCount++;
+        }
+      })();
+    </script>
+
+    <script type="text/javascript">
+      let mlUrl = "/api/ml/capture";
+      let mlImage = document.getElementById("ml");
+      let scoreRight = document.getElementById("score-right");
+
+      let mlFpsCount = 0;
+
+      setInterval(async function() {
+        // console.info("ml camera:", mlFpsCount, "fps")
+        scoreRight.innerText = scoreName + ": " + mlFpsCount
+        mlFpsCount = 0;
+      }, 1000);
+
+      (async function()  {
+        for(;;) {
+          await fetch(mlUrl)
+            .then(function(resp) {
+              return resp.json();
+            })
+            .then(function(resp) {
+              mlImage.src = "data:image/jpeg;base64," + resp.image;
+            });
+          mlFpsCount++;
+        }
+      })();
+    </script>
+  </body>
+</html>

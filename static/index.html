@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>HMD View</title>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+    html,body {
+      width: 100%;
+      height: 100%;
+      margin: 0px;
+    }
+    #container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+    }
+    .img-container {
+      width: 50%;
+      height: 100%;
+      position: relative;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      margin: 0px;
+      object-fit: fill;
+    }
+    .score {
+      color: red;
+      font-weight: bold;
+      font-size: 2em;
+      position:fixed;
+      top: 5%;
+      margin-left: 32%;
+    }
+    #start {
+      height: 50px;
+      width: 200px;
+      position: absolute;
+      top: calc(50% - 25px);
+      left: calc(50% - 100px);
+      z-index: 100;
+    }
+    </style>
+  </head>
+
+  <body>
+    <div id="container">
+      <button id="start">スタート (音が出ます)</button>
+      <div class="img-container">
+        <img id="left-eye" class="xform streamimage"/>
+        <p id="score-left" class="score"><p>
+      </div>
+      <div class="img-container">
+        <img id="right-eye" class="xform streamimage"/>
+        <p id="score-right" class="score"><p>
+      </div>
+
+    </div>
+
+    <script type="text/javascript">
+      let vrUrl = "/api/vr/capture";
+      let mlUrl = "/api/ml/capture";
+      let leftImage = document.getElementById("left-eye");
+      let rightImage = document.getElementById("right-eye");
+      let scoreLeft = document.getElementById("score-left");
+      let scoreRight = document.getElementById("score-right");
+
+      let audio = new Audio('/audio.mp3');
+      let count = 0;
+      let lastPlayed = 0;
+      let ignoreCount = 20;
+
+      let scoreName = "スコア";
+      async function vrLoop() {
+        for(;;) {
+          await fetch(vrUrl)
+            .then(function(resp) {
+              return resp.json();
+            })
+            .then(function(resp) {
+              leftImage.src = "data:image/jpeg;base64," + resp.image;
+              rightImage.src = "data:image/jpeg;base64," + resp.image;
+              scoreLeft.innerText = scoreName + ": " + resp.score;
+              scoreRight.innerText = scoreName + ": " + resp.score;
+              
+              if (resp.detected && (count - lastPlayed) > ignoreCount) {
+                audio.play();
+                console.info("sound played!")
+                lastPlayed = count;
+              }
+            });
+          count++;
+        }
+      }
+      async function mlLoop() {
+        for(;;) {
+          await fetch(mlUrl)
+            .then(function(resp) {
+              return resp.json();
+            })
+        }
+      }
+    </script>
+
+    <script type="text/javascript">
+      let started = false;
+      let startButton = document.getElementById("start");
+      startButton.addEventListener('click', function() {
+        startButton.remove();
+        vrLoop();
+        mlLoop();
+      })
+    </script>
+
+  </body>
+</html>
