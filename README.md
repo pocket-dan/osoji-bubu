@@ -39,8 +39,19 @@ go run server.go <config file>
  `<config file>` はデフォルトでは `config/macbook-pro.yaml` が使われます．
 
 
+## Hardware
+この作品のハードウェアについてです。主に以下のハードウェア・部品が必要となります。
+- ラジコンRCカー
+- 視点用カメラ(Webカメラ)
+- ゴミ検知カメラ(RaspberryPi カメラモジュール)
+- ペットボトル掃除機
+
+ゴミ検知カメラを使用するためには、市販の掃除機では対応できないため、透明なペットボトルを用いて自作する必要があります。
+自作掃除機については以下のリンクを参考に作成してみてください。
+[ペットボトルサイクロン掃除機について](http://mikamimikami.hatenablog.com/entry/2019/12/23/001000)
 
 ###  Creators:
 
 - [Taiga Mikami](https://taigamikami.netlify.com/): `hardware`, `presentation`
 - [Yuki Nakahira](https://raahii.github.io/about/): `software`
+
